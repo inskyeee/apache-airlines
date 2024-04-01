@@ -49,3 +49,35 @@ class SeatBookingSystem:
             for row in range(len(self.seat_layout[column])):
                 print(f"{row+1}{column}: {self.seat_layout[column][row]}", end='  ')
             print()
+
+def main():
+    system = SeatBookingSystem()
+    while True:
+        print("\n--- Apache Airlines Seat Booking System ---")
+        print("1. Check availability of seat")
+        print("2. Book a seat")
+        print("3. Free a seat")
+        print("4. Show booking state")
+        print("5. Exit program")
+        choice = input("Enter your choice: ")
+        
+        if choice == '1':
+            seat = input("Enter seat number (e.g., '1A'): ")
+            system.check_availability(seat)
+        elif choice == '2':
+            seat = input("Enter seat number to book (e.g., '1A'): ")
+            system.book_seat(seat)
+        elif choice == '3':
+            seat = input("Enter seat number to free (e.g., '1A'): ")
+            system.free_seat(seat)
+        elif choice == '4':
+            system.show_booking_state()
+        elif choice == '5':
+            print("Exiting the program. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
+
