@@ -44,7 +44,8 @@ def main():
             system.check_availability(seat)
         elif choice == '2':
             seat = input("Enter seat number to book (e.g., '1A'): ")
-            system.book_seat(seat)
+            reference = generate_unique_booking_reference()
+            system.book_seat(seat, reference)
         elif choice == '3':
             seat = input("Enter seat number to free (e.g., '1A'): ")
             system.free_seat(seat)

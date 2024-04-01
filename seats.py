@@ -7,7 +7,7 @@ class SeatBookingSystem:
     
     def __init__(self):
         """
-        Initializes the seat layout for the airplane.
+        Initializes the seat layout for the airplane and booking details.
         - 'F' indicates a free seat
         - 'R' indicates a reserved seat
         - 'X' denotes an aisle
@@ -21,55 +21,61 @@ class SeatBookingSystem:
             'E': ['F']*76 + ['S']*2 + ['F']*2,
             'F': ['F']*76 + ['S']*2 + ['F']*2,
         }  # Aisles are marked but not stored as they are constant and not bookable
+        self.booking_details = {}  # Dictionary to store booking reference and traveller details
 
     def check_availability(self, seat):
-            """
-            Checks if a specific seat is available for booking.
-            
-            :param seat: A string indicating the seat (e.g., "1A")
-            """
-            row, column = seat[:-1], seat[-1] # Extract row and column from the seat number
-            if column in self.seat_layout and int(row)-1 < len(self.seat_layout[column]): # Check if the seat number is valid   
-                status = self.seat_layout[column][int(row)-1] # Get the status of the seat
-                if status == 'F':
-                    print(f"Seat {seat} is available.")
-                else:
-                    print(f"Seat {seat} is not available.")
-            else:
-                print("Invalid seat number.")
-    
-    def book_seat(self, seat):
         """
-        Books a specific seat if it is available.
+        Checks if a specific seat is available for booking.
         
         :param seat: A string indicating the seat (e.g., "1A")
+        """
+        row, column = seat[:-1], seat[-1] # Extract row and column from the seat number
+        if column in self.seat_layout and int(row)-1 < len(self.seat_layout[column]): # Check if the seat number is valid   
+            status = self.seat_layout[column][int(row)-1] # Get the status of the seat
+            if status == 'F':
+                print(f"Seat {seat} is available.")
+            else:
+                print(f"Seat {seat} is not available.")
+        else:
+            print("Invalid seat number.")
+
+
+    def book_seat(self, seat, reference):
+        """
+        Books a specific seat if it is available and assigns a booking reference.
+        
+        :param seat: A string indicating the seat (e.g., "1A")
+        :param reference: A unique booking reference
         """
         row, column = seat[:-1], seat[-1]
         if column in self.seat_layout and int(row)-1 < len(self.seat_layout[column]):
             if self.seat_layout[column][int(row)-1] == 'F':
-                self.seat_layout[column][int(row)-1] = 'R'
-                print(f"Seat {seat} has been successfully booked.")
+                self.seat_layout[column][int(row)-1] = reference
+                print(f"Seat {seat} has been successfully booked with reference {reference}.")
             else:
                 print(f"Seat {seat} cannot be booked because it is not available.")
         else:
             print("Invalid seat number.")
-
     
+
     def free_seat(self, seat):
         """
-        Frees up a booked seat.
+        Frees up a booked seat and removes booking details.
         
         :param seat: A string indicating the seat (e.g., "1A")
         """
         row, column = seat[:-1], seat[-1]
         if column in self.seat_layout and int(row)-1 < len(self.seat_layout[column]):
-            if self.seat_layout[column][int(row)-1] == 'R':
+            seat_ref = self.seat_layout[column][int(row)-1]
+            if seat_ref not in ['F', 'X', 'S']:
                 self.seat_layout[column][int(row)-1] = 'F'
+                # Optionally remove booking details if stored elsewhere
                 print(f"Seat {seat} has been successfully freed.")
             else:
                 print(f"Seat {seat} is not booked.")
         else:
             print("Invalid seat number.")
+
 
     def show_booking_state(self):
         """
