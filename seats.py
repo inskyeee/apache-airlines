@@ -40,17 +40,27 @@ class SeatBookingSystem:
             print("Invalid seat number.")
 
 
-    def book_seat(self, seat, reference):
+    def book_seat(self, seat, reference, passport_number, first_name, last_name):
         """
-        Books a specific seat if it is available and assigns a booking reference.
+        Books a specific seat if it is available, assigns a booking reference, and stores user details.
         
         :param seat: A string indicating the seat (e.g., "1A")
         :param reference: A unique booking reference
+        :param passport_number: Passport number of the traveler
+        :param first_name: First name of the traveler
+        :param last_name: Last name of the traveler
         """
         row, column = seat[:-1], seat[-1]
         if column in self.seat_layout and int(row)-1 < len(self.seat_layout[column]):
             if self.seat_layout[column][int(row)-1] == 'F':
-                self.seat_layout[column][int(row)-1] = reference
+                self.seat_layout[column][int(row)-1] = reference  # Mark seat with reference
+                # Store booking details
+                self.booking_details[reference] = {
+                    'passport_number': passport_number,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'seat': seat
+                }
                 print(f"Seat {seat} has been successfully booked with reference {reference}.")
             else:
                 print(f"Seat {seat} cannot be booked because it is not available.")
@@ -60,17 +70,21 @@ class SeatBookingSystem:
 
     def free_seat(self, seat):
         """
-        Frees up a booked seat and removes booking details.
+        Frees up a booked seat, removes booking details, and marks the seat as available.
         
         :param seat: A string indicating the seat (e.g., "1A")
         """
         row, column = seat[:-1], seat[-1]
         if column in self.seat_layout and int(row)-1 < len(self.seat_layout[column]):
-            seat_ref = self.seat_layout[column][int(row)-1]
-            if seat_ref not in ['F', 'X', 'S']:
-                self.seat_layout[column][int(row)-1] = 'F'
-                # Optionally remove booking details if stored elsewhere
-                print(f"Seat {seat} has been successfully freed.")
+            booking_ref = self.seat_layout[column][int(row)-1]
+            if booking_ref not in ['F', 'X', 'S']:  # Check if the seat is booked with a reference
+                self.seat_layout[column][int(row)-1] = 'F'  # Mark the seat as free
+                # Remove the booking details associated with this reference
+                if booking_ref in self.booking_details:
+                    del self.booking_details[booking_ref]
+                    print(f"Seat {seat} and its booking details have been successfully freed.")
+                else:
+                    print("Booking reference not found. Seat marked as free.")
             else:
                 print(f"Seat {seat} is not booked.")
         else:
